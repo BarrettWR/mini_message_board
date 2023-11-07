@@ -1,3 +1,4 @@
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -6,7 +7,6 @@ var logger = require('morgan');
 const mongoose = require("mongoose");
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var app = express();
 
@@ -24,7 +24,6 @@ app.use(express.static(__dirname));
 
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -41,16 +40,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-// // Set up mongoose connection
-// mongoose.set("strictQuery", false);
-// const mongoDB = "mongodb+srv://barrettwr:admin@cluster0.fdc2riq.mongodb.net/mini_message_board?retryWrites=true&w=majority";
-
-// main().catch((err) => console.log(err));
-// async function main() {
-//   await mongoose.connect(mongoDB);
-// }
 
 
 module.exports = app;

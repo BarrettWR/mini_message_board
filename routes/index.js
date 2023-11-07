@@ -1,7 +1,7 @@
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 const mongoose = require("mongoose");
-const connection = require("../connection");
 const Message = require('../models/message');
 const Swal = require('sweetalert2');
 
@@ -10,7 +10,7 @@ mongoose.set("strictQuery", false);
 
 async function getMessages() {
   try {
-    await mongoose.connect(connection);
+    await mongoose.connect(process.env.MONGO_KEY);
     console.log('Database connected!');
 
     let dbmessages = await Message.find();
@@ -43,7 +43,7 @@ router.post('/', async function(req, res, next) {
     
     const message = new Message({name: messageUser, message: messageText, date: messageDate})
 
-    await mongoose.connect(connection);
+    await mongoose.connect(process.env.MONGO_KEY);
     console.log('Database connected!');
 
     await message.save()
