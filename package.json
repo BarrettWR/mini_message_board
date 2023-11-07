@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "build:css": "tailwindcss build -o dist/output.css",
-    "watch:css": "npx tailwindcss -i ./public/stylesheets/style.css -o ./dist/output.css --watch"
+    "watch:css": "npx tailwindcss -i ./public/stylesheets/style.css -o ./dist/output.css --watch",
+    "build": "npm run build:css && npm run start"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
