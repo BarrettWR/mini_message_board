@@ -1,22 +1,38 @@
 extends layout
 
 block content
-  div(class="flex flex-wrap gap-10 mt-10")
-    div(class="flex flex-col mr-14 gap-5")
-      h1(class="text-5xl font-bold")= title
-      p Welcome to #{title}!
-    
-      a(href='/new')
-        button(type='button', class="bg-pink-800 rounded-lg p-3") Make a post!
- 
-    div(class="flex flex-col flex-grow scrollbar-hide bg-gray-700 p-5 rounded-lg max-w-[800px] max-h-[700px] overflow-y-scroll")
-      each message in messages
-        div(class="mb-5")
-          div(class="flex items-center") 
-            div 
-              h2= message.user
-            div(class="ml-3 text-gray-400")
-              small= message.added
-          p= message.text
+  div(class="flex flex-wrap gap-10 mt-10 place-content-between text-4xl lg:text-lg")
+    div(class="flex flex-col gap-5 xl:max-w-[500px] max-w-[800px] flex-grow")
+      h1(class="text-7xl lg:text-5xl font-bold")= title
+      p(class="text-6xl lg:text-4xl mb-5") Welcome to #{title}!
+      div(class="bg-gray-700 rounded-lg p-5 gap")
+        h1(class=" text-pink-200 mb-2") Rules: 
+        p(class="mb-3") 1. Names can be be between 1 and 40 characters, and the message itself can be between 1 and 500 characters.
+        p(class="mb-3") 2. Be nice!
+
+    div(class="flex flex-col place-content-between flex-grow shadow-2xl bg-gray-700 rounded-lg max-w-[800px] h-[60vh] lg:h-[80vh]")
+      div(class="flex flex-col place-content-between flex-grow rounded-lg max-w-[800px] h-[60vh] lg:h-[80vh] overflow-y-scroll")
+        div
+          each message in messages
+            div(class="mb-2 p-5 pb-0")
+              div(class="flex items-center") 
+                div 
+                  h1(class=" text-pink-200")= message.name
+                div(class="ml-3 text-gray-400")
+                  small #{message.date.toLocaleDateString('en-us', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })}
+              p= message.message
+      
+      form(action="/" method="POST")
+        div(class="flex flex-row items-center w-[100%] bg-red-200 bg-opacity-20 p-5 rounded-lg")
+          div(class="flex flex-col w-[100%]")
+            label(for="name") 
+            input(type="text" id="name" name="name" placeholder="Name" class="bg-gray-700 text-white rounded-lg p-2 mb-2 w-[100%]")
+            label(for="message")
+            input(type="text" id="message" name="message" placeholder="Message" class="bg-gray-700 text-white red rounded-lg p-2 w-[100%]")
+            div
+              p#error
+          input(type='submit' value="Submit" class="cursor-pointer bg-pink-900 rounded-lg p-6 lg:p-3 ml-5 w-[20%]")
+          
+
     
         

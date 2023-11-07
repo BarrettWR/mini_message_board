@@ -1,134 +1,61 @@
 var express = require('express');
 var router = express.Router();
+const mongoose = require("mongoose");
+const connection = require("../connection");
+const Message = require('../models/message');
+const Swal = require('sweetalert2');
+
+mongoose.set("strictQuery", false);
 
 
-let options = {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  hour12: true
-};
+async function getMessages() {
+  try {
+    await mongoose.connect(connection);
+    console.log('Database connected!');
 
-const messages = [
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hi there!",
-    user: "Amando",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-  {
-    text: "Hello World!",
-    user: "Charles",
-    added: new Date().toLocaleDateString("en-us", options)
-  },
-];
+    let dbmessages = await Message.find();
 
+    console.log("Debug: Closing mongoose");
+    mongoose.connection.close();
+
+    // Return the messages
+    return dbmessages;
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', async function(req, res, next) {
+  // Get the messages
+  let messages = await getMessages();
+
+  // Render the page with the messages
   res.render('index', { title: 'mini message board', messages: messages });
 });
 
-router.post('/', function(req, res, next) {
-  const messageText = req.body.message;
-  const messageUser = req.body.name;
 
-  messages.push({text: messageText, user: messageUser, added: new Date()});
+router.post('/', async function(req, res, next) {
+  try {
+    const messageText = req.body.message;
+    const messageUser = req.body.name;
+    const messageDate = new Date();
+    
+    const message = new Message({name: messageUser, message: messageText, date: messageDate})
 
-  res.redirect('/')
-});
+    await mongoose.connect(connection);
+    console.log('Database connected!');
 
-router.get('/new', function(req, res, next) {
-  res.render('form', { title: 'new message' });
-});
+    await message.save()
 
-router.post('/new', function(req, res, next) {
-  const messageText = req.body.message;
-  const messageUser = req.body.name;
+    console.log("Debug: Closing mongoose");
+    mongoose.connection.close();
 
-  messages.push({text: messageText, user: messageUser, added: new Date()});
-
-  res.redirect('/')
+    res.redirect('/')
+  }
+  catch (err) {
+    res.redirect('/')
+  }
 });
 
 
